@@ -1,15 +1,20 @@
 require("dotenv").config();
 const express = require("express");
 const router = express.Router();
-const User = require("../models/Users.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const Userdao = require("../dao/UserDAO");
 
 const salts = 9;
 
 //login
-router.post("/", (req, res) => {
-  User.findOne({ email: req.body.email }, (err, user) => {
+router.post("/", async (req, res) => {
+  const { email, password } = req.body;
+  const data = { email, password };
+  let hash;
+  try {
+     hash = await new Userdao().find(data);
+  } catch (err) {
     //error handling
     if (err) {
       res.status(502).send({ err });
@@ -17,16 +22,17 @@ router.post("/", (req, res) => {
       res.status(404).send({ message: "User not Found" });
     }
 
-    //check password
-    if (bcrypt.compare(req.body.password, user.password)) {
-      const tokenn = jwt.sign({ email: req.body.email }, process.env.SECRET, {
-        expiresIn: "1h",
-      });
-      res.send({ token: tokenn });
-    } else {
-      res.sendStatus(403);
-    }
-  });
+    return;
+  }
+  //check password
+  if (bcrypt.compare(password, hash)) {
+    const tokenn = jwt.sign({ email }, process.env.SECRET, {
+      expiresIn: "1h",
+    });
+    res.send({ token: tokenn });
+  } else {
+    res.sendStatus(403);
+  }
 });
 
 /*
@@ -87,7 +93,7 @@ router.post("/", async (req,res)=>{
 */
 
 //sign up post
-router.post("/signup", (req, res) => {
+router.post("/signup", async (req, res) => {
   const { email, password } = req.body;
   const valid = new RegExp(
     "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{7,}$"
@@ -98,35 +104,30 @@ router.post("/signup", (req, res) => {
   }
   const data = { email: email, password: password };
   //hash password
-  bcrypt.hash(data.password, salts, function (err, hash) {
-    // Cast incoming data as a Sample.
-    console.log(data);
-    const user = new User(data);
 
-    // Ignore values submitted by user for system controlled fields.
-    user.createdAt = Date.now();
-    user.updatedAt = Date.now();
-    user.password = hash;
-    // Query database
-    user.save((err, dbData) => {
-      // If error occured, return error respons
-      if (err) {
-        if (err.name != "ValidationError") {
-          console.log(err);
+  try {
+    const hash = await bcrypt.hash(data.password, salts);
+    console.log(hash);
+    await new Userdao().save(data, hash);
 
-          if (err.keyPattern.hasOwnProperty("email")) {
-            problem = "Email already exists";
-          }
-          res.status(502).send({ Name: err.name, Problem: problem });
-        } else {
-          res.status(400).send({});
+    // Return success response
+    res.json({ message: "Success" });
+  } catch (err) {
+    // If error occured, return error respons
+    if (err) {
+      if (err.name != "ValidationError") {
+        console.log(err);
+
+        if (err.keyPattern.hasOwnProperty("email")) {
+          problem = "Email already exists";
         }
+        res.status(502).send({ Name: err.name, Problem: problem });
       } else {
-        // Return success response
-        res.json({ message: "Success" });
+        res.status(400).send({});
       }
-    });
-  });
+    } else {
+    }
+  }
 });
 
 module.exports = router;

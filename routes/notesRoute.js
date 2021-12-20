@@ -1,7 +1,6 @@
 const jwt=require('jsonwebtoken')
 const express = require('express')
 const router = express.Router()
-const Note = require("../models/Note.model")
 // middleware that is specific to this router
 
 
@@ -45,32 +44,12 @@ router.use(function timeLog (req, res, next) {
  
 
     // Cast incoming data as a Sample.
-    const  note = new Note(req.body);
-
-    // Ignore values submitted by user for system controlled fields.
-    note.createdAt = Date.now();
-    note.updatedAt = Date.now();
-    note.createdBy= req.user;
-    console.log(note)
-    // Query database
-    note.save((err, dbData) => {
-      // If error occured, return error respons
-      if (err) {
-        if (err.name != "ValidationError") {
-          return res.status(502).send({});
-        } else {
-          return res.status(400).send({});
-        }
-      }
-
-      // Return success response
-      res.json({
-        code: 201,
-        data: dbData, 
-        message: "Succesfuly saved"
-      });
+    
+    res.json({
+      code: 201,
+      data: dbData, 
+      message: "Succesfuly saved"
     });
-
 
   })
 
