@@ -1,32 +1,21 @@
-import React from 'react';
-import Loginpage from './components/login'
-import './App.css'
-import Homepage from './components/home'
+import React from "react";
+import Loginpage from "./components/login";
+import "./App.css";
+import Homepage from "./components/home";
 
-export default  class App extends React.Component {
+const Mode = {
+  signUp: 0,
+  loginIn: 1,
+  loggedIn: 2,
+};
 
-constructor(){
-super()
-this.state={loggedIn:false}
+export default function App(props) {
+  const [mode, setMode] = useState(Mode.loginIn);
 
-}
-
-
-render(){
-
-if(!(localStorage.getItem("TK"))){
-  return (
-   <Loginpage></Loginpage>
-  );
+  if (mode === Mode.signUp) {
+  } else if (mode === Mode.loginIn) {
+    return <Loginpage></Loginpage>;
+  } else if (mode === Mode.loggedIn) {
+    return <Homepage></Homepage>;
   }
-else{
-  return(
-   <Homepage></Homepage>
-  )
 }
-
-}
-
-} 
-
-
