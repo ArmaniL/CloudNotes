@@ -1,13 +1,11 @@
 import React from 'react';
 import '../App.css'
 import Note from './note'
-export default class  HomePage extends React.Component {
+import { useState } from 'react';
+export default function  HomePage (props){
   
 
-constructor(){
-    super()
-    this.state={notes:[]}
-}
+const [notes,setNotes] = useState([])
 
 
 componentDidMount(){
@@ -18,7 +16,7 @@ this.getNotes()
 }
 
 
-async getNotes(){
+const getNotes = (){
 //Get token
 const token=localStorage.getItem("TK")
 //if token is valid 

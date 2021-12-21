@@ -4,7 +4,7 @@
   "description": "Cloud Notes",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon server.js",
     "test": "npm start"
   },
   "author": "Armani L. Weise ",

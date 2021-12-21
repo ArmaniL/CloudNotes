@@ -43,5 +43,5 @@ fileServer = express();
 fileServer.use(morgan("common"))
 fileServer.use(express.static("./frontend/my-app/build"));
 fileServer.listen(3000,()=>{
-  console.log("Website is being hosted on port 300")
+  console.log("Website is being hosted on port 3000")
 })

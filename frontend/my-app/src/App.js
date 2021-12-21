@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import Loginpage from "./components/login";
 import "./App.css";
 import Homepage from "./components/home";
@@ -14,8 +14,8 @@ export default function App(props) {
 
   if (mode === Mode.signUp) {
   } else if (mode === Mode.loginIn) {
-    return <Loginpage></Loginpage>;
+    return <Loginpage mode = {setMode}></Loginpage>;
   } else if (mode === Mode.loggedIn) {
-    return <Homepage></Homepage>;
+    return <p>Yo</p>;
   }
 }
