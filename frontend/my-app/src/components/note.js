@@ -1,28 +1,23 @@
-import React from 'react';
-import '../App.css'
-export default class  Note extends React.Component {
-  
-
-constructor(){
-    super()
-    
-}
-
-
-
-  render(){
-  
-    return (
-        <div className="card bg-light mb-3">
-        <div className="card-header">{new Date(this.props.lastedited).toLocaleDateString()}</div>
-        <div className="card-body">
-    <h5 className="card-title">{this.props.header}</h5>
-          <p className="card-text">{this.props.content}</p>
-        </div>
-      </div>
+import React from "react";
+import "../App.css";
+import { useState } from "react";
+export default function Note(props) {
+  const { header, content } = props.note;
+  const [text, setText] = useState(content);
+  const [textHeader, setHeader] = useState(header);
+  console.log(header);
+  return (
+    <div
+      style={{ display: "flex", flexDirection: "column", textAlign: "center" }}
+    >
+      <h1>{header}</h1>
+      <input
+        type="text"
+        value={text}
+        onChange={(e) => {
+          setText(text + e.target.value);
+        }}
+      ></input>
+    </div>
   );
-    }
 }
-
-
-

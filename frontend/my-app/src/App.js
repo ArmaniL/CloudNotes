@@ -16,6 +16,6 @@ export default function App(props) {
   } else if (mode === Mode.loginIn) {
     return <Loginpage mode = {setMode}></Loginpage>;
   } else if (mode === Mode.loggedIn) {
-    return <p>Yo</p>;
+    return <Homepage></Homepage>;
   }
 }
